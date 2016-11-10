@@ -1,5 +1,12 @@
+apply plugin: "java"
 apply plugin: "scala"
+
 
 repositories {
     jcenter()
+}
+
+dependencies {
+    compile 'org.apache.spark:spark-core_2.11:2.0.1'
+    compile 'org.apache.spark:spark-sql_2.11:2.0.1'
 }
