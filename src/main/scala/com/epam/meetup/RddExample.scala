@@ -28,7 +28,6 @@ object RddExample {
     val allMovieActorPairs: RDD[(String, String)] = sparkContext.union(maleActorFile, femaleActorFile)
       .map(line => line.split("\t"))
       .filter(columns => columns.length == 3)
-      .filter(columns => columns(2).matches("[\\d]{4}")) // filter invalid years, like "????"
       .map(columns => (s"${columns(1)}-${columns(2)}", columns(0))) // title-year, actress
 
     println(s"number of movie-actor pairs: ${allMovieActorPairs.count()}")
@@ -36,7 +35,6 @@ object RddExample {
     val ratings: RDD[(String, Float)] = sparkContext.textFile(ratingFile)
       .map(line => line.split("\t"))
       .filter(columns => columns.length == 5)
-      .filter(columns => columns(4).matches("[\\d]{4}")) // filter invalid years, like "????"
       .map(columns => (s"${columns(3)}-${columns(4)}", columns(2).toFloat)) // title-year, rating
 
     println(s"number of movie-rating pairs: ${ratings.count()}")

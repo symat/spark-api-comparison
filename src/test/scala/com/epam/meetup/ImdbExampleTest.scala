@@ -29,5 +29,11 @@ class ImdbExampleTest {
     SQLExample.main(Array(INPUT_ACTORS_SAMPLE, INPUT_ACTRESSES_SAMPLE, INPUT_RATINGS_SAMPLE, OUTPUT_PATH))
   }
 
+  @Test
+  def shouldCalculateUsingDataSet() = {
+    TestUtils.deleteFolder(OUTPUT_PATH)
+    DataSetExample.main(Array(INPUT_ACTORS_SAMPLE, INPUT_ACTRESSES_SAMPLE, INPUT_RATINGS_SAMPLE, OUTPUT_PATH))
+  }
+
 
 }

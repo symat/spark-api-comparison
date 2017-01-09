@@ -36,7 +36,6 @@ object SQLExample {
       .withColumnRenamed("_c0", "name")
       .withColumnRenamed("_c1", "movieTitle")
       .withColumnRenamed("_c2", "movieYear")
-      .where($"movieYear" =!= "????")
 
     //allActorMovieRelations.show(10)
     //allActorMovieRelations.printSchema()
@@ -63,6 +62,8 @@ object SQLExample {
         "GROUP BY name")
 
     allPeopleWithAverageRates.show(10)
+
+    allPeopleWithAverageRates.rdd.saveAsTextFile(outputPath)
 
     spark.stop()
   }

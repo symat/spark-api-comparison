@@ -1,11 +1,15 @@
 package com.epam.meetup
 
 import org.apache.spark.sql.SparkSession
-import org.apache.spark.sql.types.FloatType
 
 
-object DataFrameExample {
+object DataSetExample {
 
+  case class ActorMovieRelation(name: String, movieTitle: String, movieYear: String)
+
+  case class MovieRating(distributionOfVotes: String, numberOfVotes: Int, rating: Float, movieTitle: String, movieYear: String)
+
+  case class ActorRating(name: String, rating: Float)
 
   def main(args: Array[String]): Unit = {
     require(args.length == 4, "Provide parameters in this order: actorsTsvFolderPath, actressesTsvFolderPath, ratingTsvFilePath, outputPath")
@@ -26,38 +30,29 @@ object DataFrameExample {
     import spark.implicits._
 
     val maleActorMovieRelations = loadTsvFile(actorsFolder, spark)
-    val femaleActorMovieRelations = loadTsvFile(actorsFolder, spark)
+      .map(row => new ActorMovieRelation(row.getString(0), row.getString(1), row.getString(2)))
 
-    //maleActorMovieRelations.show(10)
-    //maleActorMovieRelations.printSchema()
+    val femaleActorMovieRelations = loadTsvFile(actorsFolder, spark)
+      .map(row => new ActorMovieRelation(row.getString(0), row.getString(1), row.getString(2)))
 
     val allActorMovieRelations = maleActorMovieRelations
       .union(femaleActorMovieRelations)
-      .withColumnRenamed("_c0", "name")
-      .withColumnRenamed("_c1", "movieTitle")
-      .withColumnRenamed("_c2", "movieYear")
 
-    //allActorMovieRelations.show(10)
-    //allActorMovieRelations.printSchema()
+    allActorMovieRelations.show(10)
+    allActorMovieRelations.printSchema()
 
     println(s"number of movie-actor pairs: ${allActorMovieRelations.count()}")
 
     val movieRatings = loadTsvFile(ratingFile, spark)
-      .withColumn("rating", $"_c2".cast(FloatType))
-      .withColumnRenamed("_c3", "movieTitle")
-      .withColumnRenamed("_c4", "movieYear")
-      .drop("_c0")
-      .drop("_c1")
-      .drop("_c2")
+      .map(row => new MovieRating(row.getString(0), row.getString(1).toInt, row.getString(2).toFloat, row.getString(3), row.getString(4)))
 
     println(s"number of movie-rating pairs: ${movieRatings.count()}")
 
     val allPeopleWithRatedMovies = allActorMovieRelations
-      .join(movieRatings,
-            allActorMovieRelations("movieTitle") === movieRatings("movieTitle") &&
-            allActorMovieRelations("movieYear") === movieRatings("movieYear"))
-
-    //allPeopleWithRatedMovies.show(10)
+      .joinWith(movieRatings,
+        allActorMovieRelations("movieTitle") === movieRatings("movieTitle") &&
+          allActorMovieRelations("movieYear") === movieRatings("movieYear"))
+      .map(a => new ActorRating(a._1.name, a._2.rating))
 
     val allPeopleWithAverageRates = allPeopleWithRatedMovies
       .groupBy("name")
