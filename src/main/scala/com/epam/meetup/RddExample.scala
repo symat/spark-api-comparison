@@ -3,10 +3,6 @@ package com.epam.meetup
 import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
 
-case class MovieActor(title: String, year: Int, actor: String)
-
-case class MovieRating(title: String, year: Int, rating: Float)
-
 
 object RddExample {
 

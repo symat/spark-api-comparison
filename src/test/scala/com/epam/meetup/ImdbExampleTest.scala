@@ -23,5 +23,11 @@ class ImdbExampleTest {
     DataFrameExample.main(Array(INPUT_ACTORS_SAMPLE, INPUT_ACTRESSES_SAMPLE, INPUT_RATINGS_SAMPLE, OUTPUT_PATH))
   }
 
+  @Test
+  def shouldCalculateUsingSQL() = {
+    TestUtils.deleteFolder(OUTPUT_PATH)
+    SQLExample.main(Array(INPUT_ACTORS_SAMPLE, INPUT_ACTRESSES_SAMPLE, INPUT_RATINGS_SAMPLE, OUTPUT_PATH))
+  }
+
 
 }
