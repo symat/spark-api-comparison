@@ -15,19 +15,20 @@ object RddExample {
 
 
   def main(args: Array[String]): Unit = {
-    require(args.length == 2, "Provide parameters in this order: actorsJsonPath, ratingJsonPath")
+    require(args.length == 2, "Provide parameters in this order: actorsTsvFolderPath, actressesTsvFolderPath, ratingTsvFilePath")
 
-    val actorsJsonPath = args(0);
-    val ratingJsonPath = args(1);
+    val actorsFolder = args(0);
+    val actressesFolder = args(1);
+    val ratingFile = args(2);
 
     val spark = SparkSession.builder
-      .master("local[2]")
-      .appName("Example")
+      .master("local[4]")
+      .appName("Imdb - Spark Core")
       .getOrCreate()
 
 
 
-    val actorsRdd: RDD[MovieActors] = spark.sparkContext.textFile(actorsJsonPath)
+    val actorsRdd: RDD[MovieActors] = spark.sparkContext.textFile(actorsFile)
       .map(line => line.parseJson)
       .map(json => {
         implicit lazy val modelFormat = jsonFormat2(MovieActors)

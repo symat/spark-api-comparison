@@ -7,7 +7,8 @@ import org.scalatest.FunSuite
 class RddExampleTest  {
 
 
-  val INPUT_ACTORS_SAMPLE = "src/test/resources/test-input_actors.json"
+  val INPUT_ACTORS_SAMPLE = "data/actors_sample/"
+  val INPUT_ACTRESSES_SAMPLE = "data/actresses_sample/"
   val INPUT_RATINGS_SAMPLE = "src/test/resources/test-input_ratings.json"
 
 
