@@ -5,7 +5,7 @@ this repository created to contain example codes presented in a big data meetup:
 
 ## easy way
  - download the data from here: https://gumicsizma.netbiol.org/data-imdb-2016-dec.tgz
- - extract it in the project
+ - extract it and fix the paths in the top of test class
  
 ## hard way
  - download the original data files from the IMDB ftp servers (see http://www.imdb.com/interfaces). You will need the following files:
