@@ -53,4 +53,4 @@ for line in open(sys.argv[1], "r", encoding="latin-1"):
     line_num += 1
 
 out_file.close()
-print("exported lines: " + line_num)
+print("exported lines: %d" % line_num)
