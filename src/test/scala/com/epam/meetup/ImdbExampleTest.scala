@@ -1,6 +1,6 @@
 package com.epam.meetup
 
-import org.junit.Test
+import org.junit.{Before, Test}
 
 
 class ImdbExampleTest {
@@ -15,33 +15,32 @@ class ImdbExampleTest {
 
   @Test
   def shouldCalculateUsingRdd() = {
-    TestUtils.deleteFolder(OUTPUT_PATH)
     RddExample.main(Array(INPUT_ACTORS_SAMPLE, INPUT_ACTRESSES_SAMPLE, INPUT_RATINGS_TOP_250, OUTPUT_PATH))
   }
 
   @Test
   def shouldCalculateUsingDataFrames() = {
-    TestUtils.deleteFolder(OUTPUT_PATH)
     DataFrameExample.main(Array(INPUT_ACTORS_SAMPLE, INPUT_ACTRESSES_SAMPLE, INPUT_RATINGS_TOP_250, OUTPUT_PATH))
   }
 
   @Test
   def shouldCalculateUsingSQL() = {
-    TestUtils.deleteFolder(OUTPUT_PATH)
     SQLExample.main(Array(INPUT_ACTORS_SAMPLE, INPUT_ACTRESSES_SAMPLE, INPUT_RATINGS_TOP_250, OUTPUT_PATH))
   }
 
   @Test
   def shouldCalculateUsingDataSet() = {
-    TestUtils.deleteFolder(OUTPUT_PATH)
     DataSetExample.main(Array(INPUT_ACTORS_SAMPLE, INPUT_ACTRESSES_SAMPLE, INPUT_RATINGS_TOP_250, OUTPUT_PATH))
   }
 
   @Test
   def shouldCalculateUsingMoreCleverSql() = {
-    TestUtils.deleteFolder(OUTPUT_PATH)
     SQLExampleMoreClever.main(Array(INPUT_ACTORS, INPUT_ACTRESSES, INPUT_RATINGS_TOP_250, OUTPUT_PATH))
   }
 
+  @Before
+  def setup() = {
+    TestUtils.deleteFolder(OUTPUT_PATH)
+  }
 
 }
