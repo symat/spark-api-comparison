@@ -27,6 +27,7 @@ object DataSetExample {
     val sparkContext = spark.sparkContext
 
     // this is used to implicitly convert an RDD to a DataFrame.
+    import org.apache.spark.sql.expressions.scalalang._
     import spark.implicits._
 
     val maleActorMovieRelations = loadTsvFile(actorsFolder, spark)
@@ -44,7 +45,8 @@ object DataSetExample {
     println(s"number of movie-actor pairs: ${allActorMovieRelations.count()}")
 
     val movieRatings = loadTsvFile(ratingFile, spark)
-      .map(row => new MovieRating(row.getString(0), row.getString(1).toInt, row.getString(2).toFloat, row.getString(3), row.getString(4)))
+      .map(row => new MovieRating(row.getString(0), row.getString(1).toInt, row.getString(2).toFloat,
+                                  row.getString(3), row.getString(4)))
 
     println(s"number of movie-rating pairs: ${movieRatings.count()}")
 
@@ -55,8 +57,8 @@ object DataSetExample {
       .map(a => new ActorRating(a._1.name, a._2.rating))
 
     val allPeopleWithAverageRates = allPeopleWithRatedMovies
-      .groupBy("name")
-      .avg("rating")
+      .groupByKey(_.name)
+      .agg(typed.avg[ActorRating](_.rating))
 
     allPeopleWithAverageRates.show(10)
 
