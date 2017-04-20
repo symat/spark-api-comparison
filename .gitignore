@@ -1,6 +1,6 @@
 data/*
 !data/*.py
-
+!data/streaming_data*
 
 
 # Compiled source #
