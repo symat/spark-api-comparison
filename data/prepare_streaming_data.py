@@ -94,13 +94,12 @@ for actor_file in os.listdir(sys.argv[2]):
         title = actor_data[1]
         if "%s_%d" % (title, year) in known_movies:
             if year not in actor_data_by_year:
-                actor_data_by_year[year] = []
-            actor_data_by_year[year].append(actor_data)
+                actor_data_by_year[year] = set()
+            actor_data_by_year[year].add("\t".join(actor_data))
 
 for year in actor_data_by_year:
     out_file = open("%s/actor_data/actor_data_%d.tsv" % (sys.argv[3], year), "w", encoding="utf-8")
     for actor_data in actor_data_by_year[year]:
-        to_print = "\t".join(actor_data)
-        print(to_print, file = out_file)
-        print(to_print)
+        print(actor_data, file = out_file)
+        print(actor_data)
     out_file.close()
