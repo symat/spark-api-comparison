@@ -1,9 +1,10 @@
 package com.epam.meetup
 
+import com.epam.meetup.batch._
 import org.junit.{Before, Test}
 
 
-class ImdbExampleTest {
+class ImdbBatchExampleTest {
 
   val INPUT_ACTORS = "data/actors/"
   val INPUT_ACTORS_SAMPLE = "data/actors_sample/"

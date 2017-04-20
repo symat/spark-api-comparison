@@ -1,10 +1,10 @@
-package com.epam.meetup
+package com.epam.meetup.batch
 
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types.FloatType
 
 
-object SQLExample {
+object SQLExampleMoreClever {
 
 
   def main(args: Array[String]): Unit = {
@@ -36,13 +36,11 @@ object SQLExample {
       .withColumnRenamed("_c0", "name")
       .withColumnRenamed("_c1", "movieTitle")
       .withColumnRenamed("_c2", "movieYear")
-    allActorMovieRelations.createOrReplaceTempView("allActorMovieRelations")
 
     //allActorMovieRelations.show(10)
     //allActorMovieRelations.printSchema()
 
-    val movieActorCount = spark.sql("SELECT COUNT(*) FROM allActorMovieRelations").collect().head.getLong(0)
-    println(s"number of movie-actor pairs: $movieActorCount")
+    println(s"number of movie-actor pairs: ${allActorMovieRelations.count()}")
 
     val movieRatings = loadTsvFile(ratingFile, spark)
       .withColumn("rating", $"_c2".cast(FloatType))
@@ -51,18 +49,21 @@ object SQLExample {
       .drop("_c0")
       .drop("_c1")
       .drop("_c2")
+
+    println(s"number of movie-rating pairs: ${movieRatings.count()}")
+
+    allActorMovieRelations.createOrReplaceTempView("allActorMovieRelations")
     movieRatings.createOrReplaceTempView("movieRatings")
 
-    val ratingCount = spark.sql("SELECT COUNT(*) FROM movieRatings").collect().head.getLong(0)
-    println(s"number of movie-rating pairs: $ratingCount")
-
     val allPeopleWithAverageRates = spark.sql(
-      "SELECT name, AVG(rating) " +
+      "SELECT name, AVG(rating), COUNT(name) numberOfMovies " +
         "FROM allActorMovieRelations a " +
         "JOIN movieRatings m ON a.movieTitle = m.movieTitle AND a.movieYear = m.movieYear " +
-        "GROUP BY name")
+        "GROUP BY name " +
+        " ORDER BY avg(rating) DESC")
+      .where("numberOfMovies > 10")
 
-    allPeopleWithAverageRates.show(10)
+    allPeopleWithAverageRates.show(100)
 
     allPeopleWithAverageRates.rdd.saveAsTextFile(outputPath)
 

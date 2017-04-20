@@ -1,10 +1,10 @@
-package com.epam.meetup
+package com.epam.meetup.batch
 
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.types.FloatType
 
 
-object SQLExampleMoreClever {
+object DataFrameExample {
 
 
   def main(args: Array[String]): Unit = {
@@ -52,18 +52,18 @@ object SQLExampleMoreClever {
 
     println(s"number of movie-rating pairs: ${movieRatings.count()}")
 
-    allActorMovieRelations.createOrReplaceTempView("allActorMovieRelations")
-    movieRatings.createOrReplaceTempView("movieRatings")
+    val allPeopleWithRatedMovies = allActorMovieRelations
+      .join(movieRatings,
+            allActorMovieRelations("movieTitle") === movieRatings("movieTitle") &&
+            allActorMovieRelations("movieYear") === movieRatings("movieYear"))
 
-    val allPeopleWithAverageRates = spark.sql(
-      "SELECT name, AVG(rating), COUNT(name) numberOfMovies " +
-        "FROM allActorMovieRelations a " +
-        "JOIN movieRatings m ON a.movieTitle = m.movieTitle AND a.movieYear = m.movieYear " +
-        "GROUP BY name " +
-        " ORDER BY avg(rating) DESC")
-      .where("numberOfMovies > 10")
+    //allPeopleWithRatedMovies.show(10)
 
-    allPeopleWithAverageRates.show(100)
+    val allPeopleWithAverageRates = allPeopleWithRatedMovies
+      .groupBy("name")
+      .avg("rating")
+
+    allPeopleWithAverageRates.show(10)
 
     allPeopleWithAverageRates.rdd.saveAsTextFile(outputPath)
 
